@@ -5,14 +5,13 @@ $(document).ready(function(){
   var scanDevices = function() {
     chrome.serial.getDevices(function(devices){
       $(".device-list").remove();
+      $(".no-device-error").remove();
 
       if (devices.length > 0) {
-        $(".no-device-error").remove();
         var $select = $("<select></select>").addClass('device-list');
 
-        for(var i=0; i < devices.length; i++) {
+        for(var i=0; i < devices.length; i++)
           $select.append($("<option>" + devices[i].path + "</option>"));
-        }
 
         $(".setup").prepend($select);
       } else {
