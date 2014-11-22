@@ -12,13 +12,12 @@ void setup() {
 void loop () {
   int jump_status = digitalRead(JUMP_PIN);
   if (jump_status) {
-    result = 1; // high - jumped
     digitalWrite(LED_PIN, LOW);
+    // low - not jumped
   }
   else {
-    result = 0; // low - not jumped
+    Serial.println(1); // high - jumped
     digitalWrite(LED_PIN, HIGH);
   }
-
-  Serial.println(result);
+  delay(400);
 }
