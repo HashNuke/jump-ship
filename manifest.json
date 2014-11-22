@@ -1,0 +1,17 @@
+{
+  "name": "IoT game",
+  "version": "1.0",
+  "manifest_version": 2,
+  "minimum_chrome_version": "23",
+  "description": "what else...",
+
+  "app": {
+    "background": {
+      "scripts": [ "app.js" ]
+    }
+  },
+
+  "permissions": [
+    "serial"
+  ]
+}
