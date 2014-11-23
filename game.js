@@ -51,92 +51,88 @@ $(document).ready(function(){
     };
 
 
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: gamePreload, create: gameCreate, update: gameUpdate });
+    var gameWidth = 800;
+        gameHeight = 600,
+        game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'game-div');
+
+    var mainState = {
+      preload: function() {
+        game.stage.backgroundColor = '#F1FCFF';
+        game.load.image('ship', 'assets/spaceship.png');
+        game.load.image('brick', 'assets/brick.png');
+      },
 
 
-    function gamePreload() {
-      game.load.image('ship', 'assets/spaceship.png');
-    }
+      create: function() {
+        game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    function gameCreate() {
-      game.add.sprite(0, 0, 'ship');
-    }
+        this.score = 0;
+        this.labelScore = game.add.text(20, 20, "0", { font: "30px Arial", fill: "#444" });
 
-    function gameUpdate() {
-    }
+        this.bricks = game.add.group();
+        this.bricks.enableBody = true;
+        this.bricks.createMultiple(20, 'brick');
+
+        this.ship = this.game.add.sprite(0, 450, 'ship');
+        this.scale.x = 0.5;
+        this.scale.y = 0.5;
+        game.physics.arcade.enable(this.ship);
+        this.ship.body.gravity.y = 1000;
+
+        var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spaceKey.onDown.add(this.jump, this);
+
+        this.timer = game.time.events.loop(1500, this.addBricks, this);
+      },
+
+
+      update: function() {
+        if (this.ship.inWorld == false)
+          this.restartGame();
+
+        game.physics.arcade.overlap(this.ship, this.bricks, this.restartGame, null, this);
+      },
+
+
+      jump: function() {
+        this.ship.body.velocity.y = -350;
+      },
+
+
+      addOneBrick: function(x, y) {
+        var bricks = this.bricks.getFirstDead();
+        bricks.reset(x, y);
+        bricks.body.velocity.x = -200;
+
+        bricks.checkWorldBounds = true;
+        bricks.outOfBoundsKill = true;
+      },
+
+
+      addBricks: function() {
+        var hole = Math.floor(Math.random() * 5) + 1;
+        this.addOneBrick(gameWidth, hole);
+        // for (var i = 0; i < 8; i++)
+        //   if (i != hole && i != hole + 1)
+        //     this.addOneBrick(gameWidth, hole);
+
+        this.score += 1;
+        this.labelScore.text = this.score;
+      },
+
+      restartGame: function() {
+        game.state.start('main');
+      }
+    };
+
+
+    game.state.add('main', mainState);
+    game.state.start('main');
+
 
     serial.onReceive.addListener(onReceive);
     serial.connect(device_path, {bitrate: 115200}, onConnect);
   };
-
-  //   SerialConnection.prototype.onConnectComplete = function(connectionInfo) {
-  //     if (!connectionInfo) {
-  //       log("Connection failed.");
-  //       return;
-  //     }
-  //
-  //     this.connectionId = connectionInfo.connectionId;
-  //     chrome.serial.onReceive.addListener(this.boundOnReceive);
-  //     chrome.serial.onReceiveError.addListener(this.boundOnReceiveError);
-  //     this.onConnect.dispatch();
-  //   };
-  //
-  //   SerialConnection.prototype.onReceive = function(receiveInfo) {
-  //     if (receiveInfo.connectionId !== this.connectionId) {
-  //       return;
-  //     }
-  //
-  //     this.lineBuffer += ab2str(receiveInfo.data);
-  //
-  //     var index;
-  //     while ((index = this.lineBuffer.indexOf('\n')) >= 0) {
-  //       var line = this.lineBuffer.substr(0, index + 1);
-  //       this.onReadLine.dispatch(line);
-  //       this.lineBuffer = this.lineBuffer.substr(index + 1);
-  //     }
-  //
-  //   };
-  //
-  //   SerialConnection.prototype.onReceiveError = function(errorInfo) {
-  //     if (errorInfo.connectionId === this.connectionId) {
-  //       this.onError.dispatch(errorInfo.error);
-  //     }
-  //   };
-  //
-  //   SerialConnection.prototype.connect = function(path) {
-  //     serial.connect(path, this.onConnectComplete.bind(this))
-  //   };
-  //
-  //   SerialConnection.prototype.send = function(msg) {
-  //     if (this.connectionId < 0) {
-  //       throw 'Invalid connection';
-  //     }
-  //     serial.send(this.connectionId, str2ab(msg), function() {});
-  //   };
-  //
-  //   SerialConnection.prototype.disconnect = function() {
-  //     if (this.connectionId < 0) {
-  //       throw 'Invalid connection';
-  //     }
-  //     serial.disconnect(this.connectionId, function() {});
-  //   };
-  //
-  //   ////////////////////////////////////////////////////////
-  //   ////////////////////////////////////////////////////////
-  //
-  //   var connection = new SerialConnection();
-  //
-  //   connection.onConnect.addListener(function() {
-  //     console.log('connected to: ' + DEVICE_PATH);
-  //     connection.send("hello arduino");
-  //   });
-  //
-  //   connection.onReadLine.addListener(function(line) {
-  //     console.log(line);
-  //   });
-  //
-  //   connection.connect(DEVICE_PATH);
-  // }
 
 
   $(".scan-devices").click(scanDevices);
