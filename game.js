@@ -1,15 +1,20 @@
-var playerJump = false;
+var playerJump = false,
+    jumpTimeDelta = 350;
+    time1 = null, // new time
+    time2 = null; // old time
+
 
 $(document).ready(function(){
 
   var scanDevices = function() {
-    chrome.serial.getDevices(function(devices){
+    chrome.serial.getDevices(function(deviceList){
       $(".device-list").remove();
       $(".no-device-error").remove();
 
-      if (devices.length > 0) {
+      if (deviceList.length > 0) {
         var $select = $("<select></select>").addClass('device-list');
 
+        var devices = deviceList.reverse();
         for(var i=0; i < devices.length; i++)
           $select.append($("<option>" + devices[i].path + "</option>"));
 
@@ -25,18 +30,11 @@ $(document).ready(function(){
     console.log("Starting game...");
 
     var device_path = $(".device-list").val(),
-        serial = chrome.serial,
-        lineBuffer = "",
-        serialConnId = -1,
-        onSerialConnect = new chrome.Event(),
-        onSerialReadLine = new chrome.Event(),
-        onSerialError = new chrome.Event();
+        serialConnId = -1;
 
     var onConnect = function(conn) {
-      if(conn) {
+      if(conn)
         serialConnId = conn.connectionId;
-
-      }
       else
         alert("Something went wrong when connecting to serial device");
     };
@@ -46,6 +44,15 @@ $(document).ready(function(){
       if (info.connectionId == serialConnId && info.data) {
         console.log("ping");
         playerJump = true;
+
+        if (!time1)
+          time1 = new Date();
+
+        if (!time2)
+          time2 = time1;
+
+        time2 = time1;
+        time1 = new Date();
       }
     };
 
@@ -85,15 +92,19 @@ $(document).ready(function(){
         var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
 
-        this.timer = game.time.events.loop(1500, this.addBricks, this);
+        this.timer = game.time.events.loop(2000, this.addBricks, this);
       },
 
 
       update: function() {
-        if (this.ship.inWorld == false)
+        this.setTimeDefaults();
+        var timeDiff = time1.getTime() - time2.getTime();
+        console.log(timeDiff, jumpTimeDelta);
+
+        if (this.ship.inWorld == false || timeDiff > 2000)
           this.restartGame();
 
-        if (playerJump) {
+        if (playerJump && timeDiff > jumpTimeDelta) {
           this.jump();
           playerJump = false;
         }
@@ -102,8 +113,15 @@ $(document).ready(function(){
       },
 
 
+      setTimeDefaults: function() {
+        if (!time1)
+          time1 = new Date();
+        if (!time2)
+          time2 = time1;
+      },
+
       jump: function() {
-        this.ship.body.velocity.y = -350;
+        this.ship.body.velocity.y = -550;
       },
 
 
@@ -118,8 +136,8 @@ $(document).ready(function(){
 
 
       addBricks: function() {
-        var brickPos = Math.floor(Math.random() * 5) + 1;
-        this.addOneBrick(gameWidth, brickPos * 133); // 133 being the height of the brick asset
+        var brickPos = Math.floor(Math.random() * 3) + 1;
+        this.addOneBrick(gameWidth - 133, brickPos * 133); // 133 being the height of the brick asset
 
         this.score += 1;
         this.labelScore.text = this.score;
@@ -135,8 +153,8 @@ $(document).ready(function(){
     game.state.start('main');
 
 
-    serial.onReceive.addListener(onReceive);
-    serial.connect(device_path, {bitrate: 115200}, onConnect);
+    chrome.serial.onReceive.addListener(onReceive);
+    chrome.serial.connect(device_path, {bitrate: 115200}, onConnect);
   };
 
 
