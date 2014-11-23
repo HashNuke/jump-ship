@@ -1,3 +1,5 @@
+var playerJump = false;
+
 $(document).ready(function(){
 
   var scanDevices = function() {
@@ -43,6 +45,7 @@ $(document).ready(function(){
     var onReceive = function(info) {
       if (info.connectionId == serialConnId && info.data) {
         console.log("ping");
+        playerJump = true;
       }
     };
 
@@ -73,7 +76,7 @@ $(document).ready(function(){
         this.bricks.enableBody = true;
         this.bricks.createMultiple(20, 'brick');
 
-        this.ship = this.game.add.sprite(0, 450, 'ship');
+        this.ship = this.game.add.sprite(200, 450, 'ship');
         this.ship.scale.x = 0.5;
         this.ship.scale.y = 0.5;
         game.physics.arcade.enable(this.ship);
@@ -89,6 +92,11 @@ $(document).ready(function(){
       update: function() {
         if (this.ship.inWorld == false)
           this.restartGame();
+
+        if (playerJump) {
+          this.jump();
+          playerJump = false;
+        }
 
         game.physics.arcade.overlap(this.ship, this.bricks, this.restartGame, null, this);
       },
