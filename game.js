@@ -1,6 +1,4 @@
 $(document).ready(function(){
-  console.log("doc loaded");
-
 
   var scanDevices = function() {
     chrome.serial.getDevices(function(devices){
@@ -44,16 +42,28 @@ $(document).ready(function(){
 
     var onReceive = function(info) {
       if (info.connectionId == serialConnId && info.data) {
-        // we got ping
-        console.log("we got a ping");
+        console.log("ping");
       }
     };
-
 
     var flushSerialBuffer = function() {
       chrome.serial.flush(serialConnId, function() {});
     };
 
+
+    var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: gamePreload, create: gameCreate, update: gameUpdate });
+
+
+    function gamePreload() {
+      game.load.image('ship', 'assets/spaceship.png');
+    }
+
+    function gameCreate() {
+      game.add.sprite(0, 0, 'ship');
+    }
+
+    function gameUpdate() {
+    }
 
     serial.onReceive.addListener(onReceive);
     serial.connect(device_path, {bitrate: 115200}, onConnect);
