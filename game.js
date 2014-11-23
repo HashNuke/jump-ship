@@ -51,7 +51,7 @@ $(document).ready(function(){
     };
 
 
-    var gameWidth = 800;
+    var gameWidth  = 800,
         gameHeight = 600,
         game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'game-div');
 
@@ -74,8 +74,8 @@ $(document).ready(function(){
         this.bricks.createMultiple(20, 'brick');
 
         this.ship = this.game.add.sprite(0, 450, 'ship');
-        this.scale.x = 0.5;
-        this.scale.y = 0.5;
+        this.ship.scale.x = 0.5;
+        this.ship.scale.y = 0.5;
         game.physics.arcade.enable(this.ship);
         this.ship.body.gravity.y = 1000;
 
@@ -110,11 +110,8 @@ $(document).ready(function(){
 
 
       addBricks: function() {
-        var hole = Math.floor(Math.random() * 5) + 1;
-        this.addOneBrick(gameWidth, hole);
-        // for (var i = 0; i < 8; i++)
-        //   if (i != hole && i != hole + 1)
-        //     this.addOneBrick(gameWidth, hole);
+        var brickPos = Math.floor(Math.random() * 5) + 1;
+        this.addOneBrick(gameWidth, brickPos * 133); // 133 being the height of the brick asset
 
         this.score += 1;
         this.labelScore.text = this.score;
