@@ -17,8 +17,9 @@ void loop () {
     digitalWrite(LED_PIN, LOW);
   } else {
     // high - jumped
-    Serial.println(1);
     digitalWrite(LED_PIN, HIGH);
+    Serial.println(0);
   }
+
   delay(250);
 }
