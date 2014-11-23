@@ -21,11 +21,6 @@ $(document).ready(function(){
   };
 
 
-  $(".scan-devices").click(function() {
-    scanDevices();
-  });
-
-
   var startGame = function() {
     console.log("start called");
 
@@ -132,6 +127,7 @@ $(document).ready(function(){
   }
 
 
+  $(".scan-devices").click(scanDevices);
   $(".start-btn").click(startGame);
   scanDevices();
 });
