@@ -10,15 +10,16 @@ Makes you move, keeps you fit.
 ## Requirements
 
 * Intel Galileo (or any Arduino board)
-* Chrome app
+* Load this project dir as a Chrome app on <chrome://extensions>, using the "Load unpacked extension" button.
 * Two wires
 * and something to jump on :)
 
 
-## Setup
+## Setup & run
 
 * Burn the `ino` program to your Intel Galileo board.
-* Open the Chrome app and choose your port
+* Open the Chrome app and choose the port of your Galileo board
+* Click "start"
 
 
 ## Notes taken during the hackathon
