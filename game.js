@@ -36,7 +36,7 @@ $(document).ready(function(){
       if(conn)
         serialConnId = conn.connectionId;
       else
-        alert("Something went wrong when connecting to serial device");
+        console.log("Something went wrong when connecting to serial device", conn);
     };
 
 
