@@ -99,7 +99,6 @@ $(document).ready(function(){
       update: function() {
         this.setTimeDefaults();
         var timeDiff = time1.getTime() - time2.getTime();
-        console.log(timeDiff, jumpTimeDelta);
 
         if (this.ship.inWorld == false || timeDiff > 2000)
           this.restartGame();
