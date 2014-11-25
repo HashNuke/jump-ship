@@ -9,23 +9,23 @@ Makes you move, keeps you fit.
 
 ## Requirements
 
-* Intel Galileo (or any Arduino board)
+* Any Arduino compatible board
+  * connected to the computer with a USB cable
 * Load this project dir as a Chrome app on <chrome://extensions>, using the "Load unpacked extension" button.
 * Two wires
-* and something to jump on :)
+* a jump board (you can make one with 2 card-board pieces)
 
+## How to make the jump board
+
+* Take 2 wires
+* Connect one to pin-2 and another to ground (pin labelled GND on the board)
+* Stick the other ends of the wires to one card-board each, such that when placed together they touch
 
 ## Setup & run
 
 * Burn the `ino` program to your Intel Galileo board.
 * Open the Chrome app and choose the port of your Galileo board
 * Click "start"
-
-
-## Notes taken during the hackathon
-
-* Intel Cloud Analytics dashboard - <http://dashboard.us.enableiot.com>
-* Cloud Analytics API could not be used because Galileo's WiFi module's connection stability at the venue
 
 
 ## TODO
