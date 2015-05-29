@@ -1,5 +1,5 @@
 var playerJump = false,
-    jumpTimeDelta = 350;
+    jumpTimeDelta = 200;
     time1 = null, // new time
     time2 = null; // old time
 
@@ -92,6 +92,7 @@ $(document).ready(function(){
         var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
 
+        this.addBricks();
         this.timer = game.time.events.loop(2000, this.addBricks, this);
       },
 
@@ -103,7 +104,7 @@ $(document).ready(function(){
         if (this.ship.inWorld == false || timeDiff > 2000)
           this.restartGame();
 
-        if (playerJump && timeDiff > jumpTimeDelta) {
+        if (playerJump) {
           this.jump();
           playerJump = false;
         }
